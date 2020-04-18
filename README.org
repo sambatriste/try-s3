@@ -4,3 +4,9 @@
 #+BEGIN_SRC sh
 java -ea -Daws.accessKeyId=<access-key> -Daws.secretKey=<secret-key> com.example.Uploader <file-to-upload>
 #+END_SRC
+
+
+** docs
+
+- https://aws.amazon.com/jp/blogs/developer/parallelizing-large-uploads-for-speed-and-reliability/
+- https://hayashier.com/aws-retry/
