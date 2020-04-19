@@ -18,3 +18,8 @@ java -ea \
 
 - https://aws.amazon.com/jp/blogs/developer/parallelizing-large-uploads-for-speed-and-reliability/
 - https://hayashier.com/aws-retry/
+
+- https://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/com/amazonaws/ClientConfiguration.html
+
+- https://docs.aws.amazon.com/ja_jp/general/latest/gr/api-retries.html
+
