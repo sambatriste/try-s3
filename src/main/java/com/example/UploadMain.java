@@ -39,8 +39,9 @@ public class UploadMain {
         RetryPolicy retryPolicy = new RetryPolicy(retryCond,
                                                   DEFAULT_BACKOFF_STRATEGY,
                                                   params.maxErrorRetry,
-                                                  true);
+                                                  false);
         ClientConfiguration clientConf = new ClientConfiguration();
+        //clientConf.setMaxErrorRetry(params.maxErrorRetry);
         clientConf.setRetryPolicy(retryPolicy);
         return clientConf;
     }
