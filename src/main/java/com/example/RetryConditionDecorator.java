@@ -10,10 +10,10 @@ public abstract class RetryConditionDecorator implements RetryCondition {
 
     private static final Log log = LogFactory.getLog(RetryConditionDecorator.class);
 
-    protected final RetryCondition delegate;
+    protected final RetryCondition component;
 
-    protected RetryConditionDecorator(RetryCondition delegate) {
-        this.delegate = delegate;
+    protected RetryConditionDecorator(RetryCondition component) {
+        this.component = component;
     }
 
     @Override
@@ -21,7 +21,7 @@ public abstract class RetryConditionDecorator implements RetryCondition {
                                AmazonClientException exception,
                                int retriesAttempted) {
         before(originalRequest, exception, retriesAttempted);
-        boolean shouldRetry = delegate.shouldRetry(originalRequest, exception, retriesAttempted);
+        boolean shouldRetry = component.shouldRetry(originalRequest, exception, retriesAttempted);
         after(originalRequest, exception, retriesAttempted, shouldRetry);
         return shouldRetry;
     }

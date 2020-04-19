@@ -1,12 +1,6 @@
 package com.example;
 
-import com.amazonaws.ClientConfiguration;
-import com.amazonaws.auth.AWSCredentialsProvider;
-import com.amazonaws.regions.Regions;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.transfer.TransferManager;
-import com.amazonaws.services.s3.transfer.TransferManagerBuilder;
 import com.amazonaws.services.s3.transfer.Upload;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -19,11 +13,11 @@ public class Uploader {
 
     private final String bucketName;
 
-    private final Settings settings;
+    private final TransferManager transferManager;
 
-    public Uploader(String bucketName, Settings settings) {
+    public Uploader(String bucketName, TransferManager transferManager) {
         this.bucketName = bucketName;
-        this.settings = settings;
+        this.transferManager = transferManager;
     }
 
     public void upload(File file) throws Exception {
@@ -31,47 +25,15 @@ public class Uploader {
     }
 
     public void upload(String key, File file) throws Exception {
-        TransferManager t = settings.createTransferManager();
+
         try {
             log.debug("Object upload started");
-            Upload upload = t.upload(bucketName, key, file);
+            Upload upload = transferManager.upload(bucketName, key, file);
             upload.waitForCompletion();
             log.debug("Object upload complete");
         } finally {
-            if (t != null) t.shutdownNow();
+            transferManager.shutdownNow();
         }
     }
 
-
-    public static class Settings {
-
-        private final AWSCredentialsProvider credentialsProvider;
-
-        private final ClientConfiguration clientConfiguration;
-
-        private final long minimumUploadPartSize;
-
-        public Settings(AWSCredentialsProvider credentialsProvider, ClientConfiguration clientConfiguration,
-                        long minimumUploadPartSize) {
-            this.credentialsProvider = credentialsProvider;
-            this.clientConfiguration = clientConfiguration;
-            this.minimumUploadPartSize = minimumUploadPartSize;
-        }
-
-        private AmazonS3 createAmazonS3() {
-            return AmazonS3ClientBuilder.standard()
-                                        .withClientConfiguration(clientConfiguration)
-                                        .withRegion(Regions.AP_NORTHEAST_1)
-                                        .withCredentials(credentialsProvider)
-                                        .build();
-        }
-
-        private TransferManager createTransferManager() {
-            AmazonS3 amazonS3 = createAmazonS3();
-            return TransferManagerBuilder.standard()
-                                         .withS3Client(amazonS3)
-                                         .withMinimumUploadPartSize(minimumUploadPartSize)
-                                         .build();
-        }
-    }
 }
