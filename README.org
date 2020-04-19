@@ -23,3 +23,6 @@ java -ea \
 
 - https://docs.aws.amazon.com/ja_jp/general/latest/gr/api-retries.html
 
+- https://docs.aws.amazon.com/ja_jp/sdk-for-java/v1/developer-guide/section-client-configuration.html
+
+- https://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/constant-values.html
