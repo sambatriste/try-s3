@@ -9,20 +9,15 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.transfer.TransferManager;
 import com.amazonaws.services.s3.transfer.TransferManagerBuilder;
 import com.amazonaws.services.s3.transfer.Upload;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.io.File;
 
 public class Uploader {
 
-    public static void main(String[] args) throws Exception {
-        String bucketName = System.getProperty("bucketName");
-        assert bucketName != null : "System Property 'bucketName' must be set.";
-        Uploader uploader = new Uploader(bucketName);
+    private static final Log log = LogFactory.getLog(Uploader.class);
 
-        assert args.length > 0 : "args must be set.";
-        String fileName =  args[0];
-        uploader.upload(new File(fileName));
-    }
 
 
     private final String bucketName;
@@ -32,23 +27,23 @@ public class Uploader {
     private final ClientConfiguration clientConfiguration;
 
 
-    public Uploader(String bucketName) {
-        this(bucketName, new SystemPropertiesCredentialsProvider(), new ClientConfiguration());
-    }
-
     public Uploader(String bucketName, AWSCredentialsProvider credentialsProvider, ClientConfiguration clientConfiguration) {
         this.bucketName = bucketName;
-        this.credentialsProvider = credentialsProvider;
-        this.clientConfiguration = clientConfiguration;
+        this.credentialsProvider = (credentialsProvider == null) ?
+            new SystemPropertiesCredentialsProvider() :
+            credentialsProvider;
+        this.clientConfiguration = (clientConfiguration == null) ?
+            new ClientConfiguration() :
+            clientConfiguration;
     }
 
-    private void upload(File file) throws Exception {
+    public void upload(File file) throws Exception {
         TransferManager t = createTransferManager();
         try {
-            System.out.println("Object upload started");
+            log.debug("Object upload started");
             Upload upload = t.upload(bucketName, file.getName(), file);
             upload.waitForCompletion();
-            System.out.println("Object upload complete");
+            log.debug("Object upload complete");
         } finally {
             if (t != null) t.shutdownNow();
         }
@@ -68,4 +63,5 @@ public class Uploader {
                                     .withCredentials(credentialsProvider)
                                     .build();
     }
+
 }
