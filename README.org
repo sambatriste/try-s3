@@ -2,8 +2,16 @@
 ** usage
 
 #+BEGIN_SRC sh
-java -ea -Daws.accessKeyId=<access-key> -Daws.secretKey=<secret-key> com.example.Uploader <file-to-upload>
+java -ea \
+     -Daws.accessKeyId=<access-key> -Daws.secretKey=<secret-key> -DbucketName=<name> \
+     -DminimumUploadPartSize=<size> -DmaxErrorRetry=<count> \
+     com.example.Uploader <file-to-upload>
 #+END_SRC
+
+*** optional properties
+
+- minimumUploadPartSize (default 5MB)
+- DmaxErrorRetry (default 3)
 
 
 ** docs
