@@ -8,20 +8,20 @@ import java.io.File;
 
 import static com.amazonaws.services.s3.internal.Constants.MB;
 
-class Parameters {
+public class Parameters {
     private static final Log log = LogFactory.getLog(Parameters.class);
 
     private static final long DEFAULT_MINIMUM_UPLOAD_PART_SIZE = 5 * MB;
 
-    final String bucketName;
+    public final String bucketName;
 
-    final long minimumUploadPartSize;
+    public final long minimumUploadPartSize;
 
-    final File fileToUpload;
+    public final File fileToUpload;
 
-    final int maxErrorRetry;
+    public final int maxErrorRetry;
 
-    Parameters(String[] args) {
+    public Parameters(String[] args) {
         this.fileToUpload = getFileToUploadFrom(args);
         this.bucketName = getBucketName();
         this.minimumUploadPartSize = getMinimumUploadPartSize();

@@ -1,13 +1,11 @@
-package com.example;
+package com.example.highlevel;
 
 import com.amazonaws.services.s3.transfer.TransferManager;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.example.Parameters;
 
 
 public class UploadMain {
 
-    private static final Log log = LogFactory.getLog(UploadMain.class);
 
     public static void main(String[] args) throws Exception {
 

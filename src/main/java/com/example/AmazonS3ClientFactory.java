@@ -7,33 +7,20 @@ import com.amazonaws.retry.RetryPolicy;
 import com.amazonaws.retry.RetryPolicy.RetryCondition;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.amazonaws.services.s3.transfer.TransferManager;
-import com.amazonaws.services.s3.transfer.TransferManagerBuilder;
 import com.example.RetryConditionDecorator.LoggingDecorator;
 
 import static com.amazonaws.retry.PredefinedRetryPolicies.DEFAULT_BACKOFF_STRATEGY;
 import static com.amazonaws.retry.PredefinedRetryPolicies.DEFAULT_RETRY_CONDITION;
 
-class TransferManagerFactory {
-
-    private final long minimumUploadPartSize;
+public class AmazonS3ClientFactory {
 
     private final int maxErrorRetry;
 
-    TransferManagerFactory(long minimumUploadPartSize, int maxErrorRetry) {
-        this.minimumUploadPartSize = minimumUploadPartSize;
+    public AmazonS3ClientFactory(int maxErrorRetry) {
         this.maxErrorRetry = maxErrorRetry;
     }
 
-    TransferManager create() {
-        AmazonS3 amazonS3 = createAmazonS3();
-        return TransferManagerBuilder.standard()
-                                     .withS3Client(amazonS3)
-                                     .withMinimumUploadPartSize(minimumUploadPartSize)
-                                     .build();
-    }
-
-    private AmazonS3 createAmazonS3() {
+    public AmazonS3 createAmazonS3() {
         ClientConfiguration clientConfiguration = createClientConfiguration();
         return AmazonS3ClientBuilder.standard()
                                     .withClientConfiguration(clientConfiguration)
@@ -53,5 +40,4 @@ class TransferManagerFactory {
         clientConf.setRetryPolicy(retryPolicy);
         return clientConf;
     }
-
 }
