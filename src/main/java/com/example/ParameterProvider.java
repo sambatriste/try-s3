@@ -15,6 +15,11 @@ public class ParameterProvider {
 
     /** パラメータ取得元 */
     interface ParameterSource {
+        /**
+         * 指定されたキーに対応する値を取得する。
+         * @param key キー
+         * @return 値（キーに対応する値が存在しない場合、{@code null}）
+         */
         String get(String key);
     }
 
