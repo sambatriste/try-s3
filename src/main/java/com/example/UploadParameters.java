@@ -8,8 +8,8 @@ import java.io.File;
 
 import static com.amazonaws.services.s3.internal.Constants.MB;
 
-public class Parameters {
-    private static final Log log = LogFactory.getLog(Parameters.class);
+public class UploadParameters {
+    private static final Log log = LogFactory.getLog(UploadParameters.class);
 
     private static final long DEFAULT_MINIMUM_UPLOAD_PART_SIZE = 5 * MB;
 
@@ -21,11 +21,17 @@ public class Parameters {
 
     public final int maxErrorRetry;
 
-    public Parameters(String[] args) {
+    public final int numberOfThread;
+
+    public UploadParameters(String[] args) {
+        ParameterProvider src = new ParameterProvider();
         this.fileToUpload = getFileToUploadFrom(args);
-        this.bucketName = getBucketName();
-        this.minimumUploadPartSize = getMinimumUploadPartSize();
-        this.maxErrorRetry = getMaxRetryError();
+        this.bucketName = src.get("bucketName");
+        this.minimumUploadPartSize = src.getNumber("minimumUploadPartSize",
+                                                   DEFAULT_MINIMUM_UPLOAD_PART_SIZE).longValue();
+        this.maxErrorRetry = src.getNumber("maxErrorRetry",
+                                           PredefinedRetryPolicies.DEFAULT_MAX_ERROR_RETRY).intValue();
+        this.numberOfThread = src.getNumber("numberOfThread", 5).intValue();
         log.debug(this);
     }
 
@@ -35,26 +41,6 @@ public class Parameters {
         return new File(filePath);
     }
 
-    private static String getBucketName() {
-        String bucketName = System.getProperty("bucketName");
-        assert bucketName != null : "System Property 'bucketName' must be set.";
-        return bucketName;
-    }
-
-    private static long getMinimumUploadPartSize() {
-        String minimumUploadPartSize = System.getProperty("minimumUploadPartSize");
-        return minimumUploadPartSize == null ?
-            DEFAULT_MINIMUM_UPLOAD_PART_SIZE :
-            Long.parseLong(minimumUploadPartSize);
-    }
-
-    private static int getMaxRetryError() {
-        String maxErrorRetry = System.getProperty("maxErrorRetry");
-        return maxErrorRetry == null ?
-            PredefinedRetryPolicies.DEFAULT_MAX_ERROR_RETRY :
-            Integer.parseInt(maxErrorRetry);
-    }
-
     @Override
     public String toString() {
         return "Parameters{" +
@@ -62,6 +48,7 @@ public class Parameters {
             ", minimumUploadPartSize=" + minimumUploadPartSize +
             ", fileToUpload=" + fileToUpload +
             ", maxErrorRetry=" + maxErrorRetry +
+            ", numberOfThread=" + numberOfThread +
             '}';
     }
 }
