@@ -11,7 +11,7 @@ import java.util.Properties;
 /**
  * パラメータを提供するクラス。
  */
-public class ParameterProvider {
+public class Variables {
 
     /** パラメータ取得元 */
     interface ParameterSource {
@@ -25,19 +25,19 @@ public class ParameterProvider {
 
     private final List<ParameterSource> parameterSources;
 
-    public ParameterProvider() {
+    public Variables() {
         List<ParameterSource> parameterSources = new ArrayList<>();
         parameterSources.add(System::getProperty);
         parameterSources.add(new EnvParameterSource());
         this.parameterSources = parameterSources;
     }
 
-    public ParameterProvider(String propFilePath) {
+    public Variables(String propFilePath) {
         this();
         parameterSources.add(new PropFileParameterSource(propFilePath));
     }
 
-    public ParameterProvider(List<ParameterSource> parameterSources) {
+    public Variables(List<ParameterSource> parameterSources) {
         this.parameterSources = parameterSources;
     }
 
@@ -126,7 +126,7 @@ public class ParameterProvider {
         }
 
         private static Properties load(String resourceName) {
-            InputStream in = ParameterProvider.class.getResourceAsStream(resourceName);
+            InputStream in = Variables.class.getResourceAsStream(resourceName);
             if (in == null) {
                 throw new IllegalArgumentException(resourceName);
             }

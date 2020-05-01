@@ -24,7 +24,7 @@ public class UploadParameters {
     public final int numberOfThread;
 
     public UploadParameters(String[] args) {
-        ParameterProvider src = new ParameterProvider();
+        Variables src = new Variables();
         this.fileToUpload = getFileToUploadFrom(args);
         this.bucketName = src.get("bucketName");
         this.minimumUploadPartSize = src.getNumber("minimumUploadPartSize",
