@@ -14,7 +14,7 @@ import java.util.Properties;
 public class Variables {
 
     /** パラメータ取得元 */
-    interface ParameterSource {
+    interface VariableSource {
         /**
          * 指定されたキーに対応する値を取得する。
          * @param key キー
@@ -23,22 +23,22 @@ public class Variables {
         String get(String key);
     }
 
-    private final List<ParameterSource> parameterSources;
+    private final List<VariableSource> variableSources;
 
     public Variables() {
-        List<ParameterSource> parameterSources = new ArrayList<>();
-        parameterSources.add(System::getProperty);
-        parameterSources.add(new EnvParameterSource());
-        this.parameterSources = parameterSources;
+        List<VariableSource> variableSources = new ArrayList<>();
+        variableSources.add(new EnvVariableSource());
+        variableSources.add(System::getProperty);
+        this.variableSources = variableSources;
     }
 
     public Variables(String propFilePath) {
         this();
-        parameterSources.add(new PropFileParameterSource(propFilePath));
+        variableSources.add(new PropFileVariableSource(propFilePath));
     }
 
-    public Variables(List<ParameterSource> parameterSources) {
-        this.parameterSources = parameterSources;
+    public Variables(List<VariableSource> variableSources) {
+        this.variableSources = variableSources;
     }
 
     /**
@@ -89,7 +89,7 @@ public class Variables {
     }
 
     private String doGet(String key) {
-        for (ParameterSource s : parameterSources) {
+        for (VariableSource s : variableSources) {
             String value = s.get(key);
             if (value != null) {
                 return value;
@@ -98,8 +98,8 @@ public class Variables {
         return null;
     }
 
-    /** 値を環境変数から取得する{@link ParameterSource}実装クラス。 */
-    private static class EnvParameterSource implements ParameterSource {
+    /** 値を環境変数から取得する{@link VariableSource}実装クラス。 */
+    private static class EnvVariableSource implements VariableSource {
         @Override
         public String get(String key) {
             String envKey = key.replace(".", "_").toUpperCase();
@@ -107,16 +107,16 @@ public class Variables {
         }
     }
 
-    /** 値をプロパティファイルから取得する{@link ParameterSource}実装クラス。 */
-    private static class PropFileParameterSource implements ParameterSource {
+    /** 値をプロパティファイルから取得する{@link VariableSource}実装クラス。 */
+    private static class PropFileVariableSource implements VariableSource {
 
         private final Properties properties;
 
-        private PropFileParameterSource(String resourcePath) {
+        private PropFileVariableSource(String resourcePath) {
             this(load(resourcePath));
         }
 
-        private PropFileParameterSource(Properties properties) {
+        private PropFileVariableSource(Properties properties) {
             this.properties = properties;
         }
 
